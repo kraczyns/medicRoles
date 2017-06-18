@@ -22,7 +22,7 @@
         <div class="form-group input-group-sm">
             @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Date, "{0:yyyy-MM-dd}", new { @type = "date" })
+                @Html.TextBoxFor(model => model.Date, "{0:f}", new { @type = "datetime-local" })
             </div>
         </div>
         <div class="form-group">

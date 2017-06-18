@@ -10,7 +10,7 @@
     <div class="row">
         @foreach (shanuMVCUserRoles.Models.Specialization Specialization in Enum.GetValues(typeof(shanuMVCUserRoles.Models.Specialization)))
         {
-            <a href='@Url.Action("Index", "Appointments", new { userId = ViewBag.Id, specializationId = Specialization, place = ViewBag.Place })' class="btn btn-success">@Specialization</a>
+            <a href='@Url.Action("Index", "Appointments", new { userId = ViewBag.Id, specializationId = Specialization, place = ViewBag.Place, fromDate = ViewBag.FromDate, toDate = ViewBag.ToDate })' class="btn btn-success">@Specialization</a>
         }
     </div>
 </div>
@@ -19,7 +19,7 @@
     <div class="row">
         @foreach (shanuMVCUserRoles.Models.Place Place in Enum.GetValues(typeof(shanuMVCUserRoles.Models.Place)))
             {
-            <a href='@Url.Action("Index", "Appointments", new { userId = ViewBag.Id, specializationId = ViewBag.Specialization, place = Place })' class="btn btn-primary">@Place</a>
+            <a href='@Url.Action("Index", "Appointments", new { userId = ViewBag.Id, specializationId = ViewBag.Specialization, place = Place, fromDate = ViewBag.FromDate, toDate = ViewBag.ToDate })' class="btn btn-primary">@Place</a>
         }
     </div>
 </div>
@@ -33,7 +33,7 @@
     </div>
 }
 
-<table class="table">
+<table class="table table-hover">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Doctor.Specialization)
@@ -50,7 +50,7 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model.Appointments)
+    @foreach (var item in Model.Appointments.OrderBy(m => m.Date))
     {
         <tr>
             <td>

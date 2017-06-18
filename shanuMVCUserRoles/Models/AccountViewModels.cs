@@ -76,6 +76,12 @@ namespace shanuMVCUserRoles.Models
         Okulista
     }
 
+    public enum UserRoles
+    {
+        Lekarz,
+        Pacjent
+    }
+
     public class AppointmentViewModel
     {
         [Display(Name = "Lekarz")]
@@ -142,7 +148,7 @@ namespace shanuMVCUserRoles.Models
     {
 		[Required]
 		[Display(Name = "Rola")]
-		public string UserRoles { get; set; }
+		public UserRoles UserRoles { get; set; }
 
 		[Required]
 		[EmailAddress]
@@ -153,7 +159,6 @@ namespace shanuMVCUserRoles.Models
 		[Display(Name = "Nazwa użytkownika")]
 		public string UserName { get; set; }
 
-        [Required]
         [Display(Name = "Specjalizacja")]
         public Specialization? Specialization { get; set; }
 
@@ -169,6 +174,9 @@ namespace shanuMVCUserRoles.Models
         [Required]
         [Display(Name = "Nazwisko")]
         public string Surname { get; set; }
+
+        [Display(Name="Zatwierdzony")]
+        public bool isValid { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

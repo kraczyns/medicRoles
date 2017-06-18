@@ -12,6 +12,7 @@ using shanuMVCUserRoles.Models;
 using System.Data.Entity;
 using System.Net;
 using System.Collections.Generic;
+using System.Net.Mail;
 
 namespace shanuMVCUserRoles.Controllers
 {
@@ -55,25 +56,134 @@ namespace shanuMVCUserRoles.Controllers
                 _userManager = value;
             }
         }
-
+        [Authorize(Roles = "Admin")]
         public ActionResult List()
         {
             var users = context.Users.ToList();
             return View(users);
         }
 
-        [HttpPost]
-        public ActionResult List(bool[] Valid)
+        [Authorize(Roles = "Admin")]
+        public ActionResult Edit(string id)
         {
-            var users = context.Users.ToList();
-            for (int item = 0; item < users.Count(); item++)
+            if (id == null)
             {
-                users[item].isValid = Valid[item];
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            context.SaveChanges();
-            return RedirectToAction("List");
+            ApplicationUser user = context.Users.Find(id);
+            ViewBag.Name = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin"))
+                                .ToList(), "Name", "Name");
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
         }
-        //
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Surname,PESEL,Specialization,isValid,UserRoles")] ApplicationUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                    var updatedUser = context.Users.Find(user.Id);
+                
+               if (user.isValid && !updatedUser.isValid)
+                {
+                    await this.UserManager.RemoveFromRoleAsync(user.Id, "Nieautoryzowany");
+                    await this.UserManager.AddToRoleAsync(user.Id, user.UserRoles);
+                    updatedUser.isValid = true;
+                    updatedUser.UserRoles = user.UserRoles;
+                    if (user.UserRoles == "Lekarz")
+                    {
+                        updatedUser.Specialization = user.Specialization;
+                    }
+                    else
+                    {
+                        updatedUser.Specialization = null;
+                    }
+                    var body = "<p>Email od: {0} ({1})</p><p>Wiadomość:</p><p>{2}</p>";
+                    var message = new MailMessage();
+                    message.To.Add(new MailAddress(updatedUser.Email));  // replace with valid value 
+                    message.From = new MailAddress("karolinaaraczynska@gmail.com");  // replace with valid value
+                    message.Subject = "Konto użytkownika w portalu WebMedic";
+                    message.Body = string.Format(body, "WebMedic", "karolinaaraczynska@gmail.com", "Twoje konto zostało zautoryzowane, od teraz może korzystać z portalu WebMedic");
+                    message.IsBodyHtml = true;
+
+                    using (var smtp = new SmtpClient())
+                    {
+                        var credential = new NetworkCredential
+                        {
+                            UserName = "karolinaaraczynska@gmail.com",  // replace with valid value
+                            Password = "stokrotka1"  // replace with valid value
+                        };
+                        smtp.Credentials = credential;
+                        smtp.Host = "smtp.gmail.com";
+                        smtp.Port = 587;
+                        smtp.EnableSsl = true;
+                        try
+                        {
+                            await smtp.SendMailAsync(message);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                        }
+                    }
+                }
+               else if (user.isValid && updatedUser.isValid)
+                {
+                    await this.UserManager.RemoveFromRoleAsync(user.Id, updatedUser.UserRoles);
+                    await this.UserManager.AddToRoleAsync(user.Id, user.UserRoles);
+                    updatedUser.UserRoles = user.UserRoles;
+                    if (user.UserRoles == "Lekarz")
+                    {
+                        updatedUser.Specialization = user.Specialization;
+                    }
+                    else
+                    {
+                        updatedUser.Specialization = null;
+                    }
+                }
+
+                await context.SaveChangesAsync();
+                    //Ends Here 
+                    return RedirectToAction("List");
+            }
+            ViewBag.Name = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin"))
+                                      .ToList(), "Name", "Name");
+            return View(user);
+        }
+
+        [Authorize(Roles = "Admin")]
+        // GET: Tests/Delete/5
+        public ActionResult Delete(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ApplicationUser user = context.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
+        }
+
+        [Authorize(Roles = "Admin")]
+        // POST: Tests/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(string id)
+        {
+            ApplicationUser user = context.Users.Find(id);
+            context.Users.Remove(user);
+            context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
         // GET: /Account/Login
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -175,21 +285,14 @@ namespace shanuMVCUserRoles.Controllers
             if (ModelState.IsValid)
             {
 
-				var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, Surname = model.Surname, PESEL = model.PESEL, Specialization = model.Specialization };
+				var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, Surname = model.Surname, PESEL = model.PESEL, Specialization = model.Specialization, UserRoles = model.UserRoles.ToString() };
 				var result = await UserManager.CreateAsync(user, model.Password);
 				if (result.Succeeded)
 				{
 					await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
-					// For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-					// Send an email with this link
-					// string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-					// var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-					// await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-					//Assign Role to user Here   
-					await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
-					//Ends Here 
-					return RedirectToAction("Index", "Users");
+                    await this.UserManager.AddToRoleAsync(user.Id, "Nieautoryzowany");
+                    //Ends Here 
+                    return RedirectToAction("Index", "Users");
 				}
 				ViewBag.Name = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin"))
 										  .ToList(), "Name", "Name");

@@ -3,8 +3,12 @@
     ViewBag.Title = "Twój profil";
 }
 
-<h2>@ViewBag.Title.</h2>
+<h2>@ViewBag.Title</h2>
 <div>
+    @if (User.IsInRole("Nieautoryzowany"))
+    {
+        <h3>Tutaj pojawią się Twoje dane oraz wizyty, w momencie kiedy administrator zatwierdzi Twoje konto. </h3>
+    }
 @if (User.IsInRole("Pacjent"))
 {
 <h1></h1>
@@ -38,48 +42,60 @@
         <div class="container">
             <h2> Wizyty </h2>
             <button class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#plannedPatient"> Zaplanowane </button>
-            <table class="table" id="plannedPatient">
-                <tr>
-                    <th>
-                        Lekarz
-                    </th>
-                    <th>
-                        Specjalizacja
-                    </th>
-                    <th>
-                        Termin
-                    </th>
-                    <th>
-                        Miejsce
-                    </th>
-                    <th>
-
-                    </th>
-                </tr>
-                @foreach (var item in Model.Appointments.Where(a => a.PatientID == @ViewBag.Id).Where(a => a.Date >= DateTime.UtcNow))
-                {
+            @if (Model.Appointments.Where(a => a.PatientID == @ViewBag.Id).Where(a => a.Date >= DateTime.UtcNow).Count() != 0)
+            {
+                <table class="table table-hover" id="plannedPatient">
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Doctor.Name)
-                            @Html.DisplayFor(modelItem => item.Doctor.Surname)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Doctor.Specialization)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Date)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Place)
-                        </td>
-                        <td>
-                            <a href='@Url.Action("Edit", "Appointments", new { id = item.AppointmentID })' class="btn btn-danger">Odwołaj</a>
-                        </td>
+                        <th>
+                            Lekarz
+                        </th>
+                        <th>
+                            Specjalizacja
+                        </th>
+                        <th>
+                            Termin
+                        </th>
+                        <th>
+                            Miejsce
+                        </th>
+                        <th>
+
+                        </th>
                     </tr>
-                }
-            </table>
+                    @foreach (var item in Model.Appointments.Where(a => a.PatientID == @ViewBag.Id).Where(a => a.Date >= DateTime.UtcNow))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Doctor.Name)
+                                @Html.DisplayFor(modelItem => item.Doctor.Surname)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Doctor.Specialization)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Date)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Place)
+                            </td>
+                            <td>
+                                <a href='@Url.Action("Edit", "Appointments", new { id = item.AppointmentID })' class="btn btn-danger">Odwołaj</a>
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            }
+            else
+            {
+                <center>
+                    <h5 id="plannedPatient">Nie masz jeszcze zaplanowanych wizyt.</h5>
+                </center>
+            }
             <button class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#historyPatient"> Historia </button>
-            <table class="table collapse" id="historyPatient">
+           @if (Model.Appointments.Where(a => a.PatientID == @ViewBag.Id).Where(a => a.Date < DateTime.UtcNow).Count() != 0)
+           {
+            <table class="table table-hover collapse" id="historyPatient">
                 <tr>
                     <th>
                         Lekarz
@@ -113,6 +129,13 @@
                     </tr>
                 }
             </table>
+           }
+           else
+           {
+            <center>
+                <h5 id="historyPatient" class="collapse">Nie masz jeszcze wizyt w historii.</h5>
+            </center>
+           }
             <div style="text-align: center;">
                 <h1>
                     <a href='@Url.Action("Index", "Appointments", new { userId = ViewBag.Id})' class="btn btn-primary btn-lg"> Zapisz mnie na wizytę </a>
@@ -156,12 +179,13 @@
                         </tr>
                     </table>
         </div>
-
         <div class="container">
             <h2> Wizyty </h2>
             <div class="row">
                 <div class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#planned"> Zaplanowane </div>
-                <table class="table" id="planned">
+               @if (Model.Appointments.Where(a => a.DoctorID == ViewBag.Id).Where(a => a.PatientID != "free").Where(a => a.Date >= DateTime.UtcNow).Count() != 0)
+               {
+                <table class="table table-hover" id="planned">
                     <tr>
                         <th>
                             Pacjent
@@ -177,7 +201,7 @@
                         </th>
                     </tr>
                     @foreach (var item in Model.Appointments.Where(a => a.DoctorID == ViewBag.Id).Where(a => a.PatientID != "free").Where(a => a.Date >= DateTime.UtcNow))
-                {
+                    {
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Patient.Name)
@@ -196,63 +220,88 @@
                         </tr>
                     }
                 </table>
+               }
+               else
+               {
+                <center>
+                    <h5 id="planned">Nie masz jeszcze zaplanowanych wizyt.</h5>
+                </center>
+               }
                 <div class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#free"> Wolne terminy </div>
-                <table class="table collapse" id="free">
-                    <tr>
-                        <th>
-                            Termin
-                        </th>
-                        <th>
-                            Miejsce
-                        </th>
-                        <th>
-
-                        </th>
-                    </tr>
-                    @foreach (var item in Model.Appointments.Where(a => a.DoctorID == ViewBag.Id).Where(a => a.PatientID == "free"))
+                @if (Model.Appointments.Where(a => a.DoctorID == ViewBag.Id).Where(a => a.PatientID == "free").Count()!=0)
                 {
+                    <table class="table table-hover collapse" id="free">
                         <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Date)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Place)
-                            </td>
-                            <td>
-                                <a href='@Url.Action("Delete", "Appointments", new { id = item.AppointmentID })' class="btn btn-danger">Odwołaj</a>
-                            </td>
+                            <th>
+                                Termin
+                            </th>
+                            <th>
+                                Miejsce
+                            </th>
+                            <th>
+
+                            </th>
                         </tr>
-                    }
-                </table>
-                <div class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#history"> Historia </div>
-                <table class="table collapse" id="history">
-                    <tr>
-                        <th>
-                            Pacjent
-                        </th>
-                        <th>
-                            Termin
-                        </th>
-                        <th>
-                            Miejsce
-                        </th>
-                    </tr>
-                    @foreach (var item in Model.Appointments.Where(a => a.DoctorID == ViewBag.Id).Where(a => a.PatientID != "free").Where(a => a.Date < DateTime.UtcNow))
-                {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Patient.Name)
-                        @Html.DisplayFor(modelItem => item.Patient.Surname)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Date)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Place)
-                    </td>
-                </tr>
+                        @foreach (var item in Model.Appointments.Where(a => a.DoctorID == ViewBag.Id).Where(a => a.PatientID == "free"))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Date)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Place)
+                                </td>
+                                <td>
+                                    <a href='@Url.Action("Delete", "Appointments", new { id = item.AppointmentID })' class="btn btn-danger">Odwołaj</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
                 }
-                </table>
+                else
+                {
+                    <center>
+                        <h5 class="collapse" id="free">Nie masz jeszcze wolnych terminów.</h5>
+                    </center>
+                }
+                <div class="btn btn-success btn-lg btn-block" data-toggle="collapse" data-target="#history"> Historia </div>
+                @if (Model.Appointments.Where(a => a.DoctorID == ViewBag.Id).Where(a => a.PatientID != "free").Where(a => a.Date < DateTime.UtcNow).Count()!=0)
+                {
+                    <table class="table table-hover collapse" id="history">
+                        <tr>
+                            <th>
+                                Pacjent
+                            </th>
+                            <th>
+                                Termin
+                            </th>
+                            <th>
+                                Miejsce
+                            </th>
+                        </tr>
+                        @foreach (var item in Model.Appointments.Where(a => a.DoctorID == ViewBag.Id).Where(a => a.PatientID != "free").Where(a => a.Date < DateTime.UtcNow))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Patient.Name)
+                                    @Html.DisplayFor(modelItem => item.Patient.Surname)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Date)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Place)
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+                else
+                {
+                    <center>
+                        <h5 class="collapse" id="history">Nie masz jeszcze wizyt w historii.</h5>
+                    </center>
+                }
             </div>
             <div style="text-align: center;">
                 <h1>

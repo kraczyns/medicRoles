@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using shanuMVCUserRoles.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Net.Mail;
 
 namespace shanuMVCUserRoles.Controllers
 {
@@ -136,6 +137,35 @@ namespace shanuMVCUserRoles.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Appointment appointment = db.Appointments.Find(id);
+            ApplicationUser user = db.Users.Find(appointment.PatientID);
+            var body = "<p>Email od: {0} ({1})</p><p>Wiadomość:</p><p>{2}</p>";
+            var message = new MailMessage();
+            message.To.Add(new MailAddress(user.Email));  // replace with valid value 
+            message.From = new MailAddress("karolinaaraczynska@gmail.com");  // replace with valid value
+            message.Subject = "Odwołanie wizyty";
+            message.Body = string.Format(body, "WebMedic", "karolinaaraczynska@gmail.com", "Wizyta, która miała się odbyć: " + appointment.Date + " została odwołana przez lekarza. Przepraszamy za problem.");
+            message.IsBodyHtml = true;
+
+            using (var smtp = new SmtpClient())
+            {
+                var credential = new NetworkCredential
+                {
+                    UserName = "karolinaaraczynska@gmail.com",  // replace with valid value
+                    Password = "stokrotka1"  // replace with valid value
+                };
+                smtp.Credentials = credential;
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                try
+                {
+                    smtp.SendMailAsync(message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
             db.Appointments.Remove(appointment);
             db.SaveChanges();
             return RedirectToAction("Index", "Manage");

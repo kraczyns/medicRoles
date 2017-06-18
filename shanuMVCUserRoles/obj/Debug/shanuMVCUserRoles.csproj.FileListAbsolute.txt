@@ -144,3 +144,5 @@ C:\Users\raczykar\Desktop\C#\shanuMVCUserRoles\obj\Debug\shanuMVCUserRoles.Migra
 C:\Users\raczykar\Desktop\C#\shanuMVCUserRoles\obj\Debug\shanuMVCUserRoles.Migrations.free.resources
 C:\Users\raczykar\Desktop\C#\shanuMVCUserRoles\obj\Debug\shanuMVCUserRoles.csprojResolveAssemblyReference.cache
 C:\Users\raczykar\Desktop\C#\shanuMVCUserRoles\obj\Debug\shanuMVCUserRoles.Migrations.adminvalidation.resources
+C:\Users\raczykar\Desktop\C#\shanuMVCUserRoles\obj\Debug\shanuMVCUserRoles.Migrations.validation2.resources
+C:\Users\raczykar\Desktop\C#\shanuMVCUserRoles\obj\Debug\shanuMVCUserRoles.Migrations.datetime.resources

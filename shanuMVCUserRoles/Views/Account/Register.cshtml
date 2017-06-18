@@ -29,9 +29,9 @@
     <h4>Stwórz konto.</h4>
     <hr />
     <div class="form-group jumbotron">
-        @Html.Label("Rola", new { @class = "col-md-2 control-label", @id = "role"})
+        @Html.Label("Rola", new { @class = "col-md-2 control-label", @id = "role" })
         <div class="col-md-10">
-          @Html.DropDownList("UserRoles", (SelectList)ViewBag.Name, new { @class = "form-control", @id = "choosen" })
+            @Html.EnumDropDownListFor(m => m.UserRoles, new { @class = "form-control", @id = "choosen" })
         </div>
     </div>
     <div class="row">

@@ -10,6 +10,9 @@
 <table class="table table-hover">
     <tr>
         <th>
+            Rola
+        </th>
+        <th>
             Imię
         </th>
         <th>
@@ -24,35 +27,38 @@
         <th>
             Zatwierdzony?
         </th>
+        <th>
+
+        </th>
     </tr>
-    @for (int item = 0; item < Model.Count(); item++)
+    @foreach (var item in Model.Where(m => m.PESEL != null).OrderBy(m => m.isValid))
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => Model[item].Name)
+                @Html.DisplayFor(modelItem => item.UserRoles)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => Model[item].Surname)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => Model[item].PESEL)
+                @Html.DisplayFor(modelItem => item.Surname)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => Model[item].Specialization)
+                @Html.DisplayFor(modelItem => item.PESEL)
             </td>
             <td>
-             @Html.CheckBoxFor(modelItem => Model[item].isValid)
+                @Html.DisplayFor(modelItem => item.Specialization)
+            </td>
+            <td>
+             @Html.CheckBoxFor(modelItem => item.isValid)
+            </td>
+            <td>
+                @Html.ActionLink("Edycja", "Edit", new { id = item.Id}) |
+                @Html.ActionLink("Usuń", "Delete", new { id = item.Id })
             </td>
         </tr>
     }
 </table>
-<center>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Zapisz" class="btn btn-default" />
-        </div>
-    </div>
-</center>
 }
 
 

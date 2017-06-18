@@ -51,7 +51,6 @@ namespace shanuMVCUserRoles.Controllers
             }
         }
 
-        //
         // GET: /Manage/Index
         public ActionResult Index()
         {

@@ -1,6 +1,25 @@
-﻿@model shanuMVCUserRoles.Models.EditViewModel
+﻿@model shanuMVCUserRoles.Models.ApplicationUser
+
 @{
-    ViewBag.Title = "Edytuj profil";
+    ViewBag.Title = "Edycja";
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#doctorSpecialization").hide();
+
+            $("#choosen").change(function () {
+                if ($("#choosen").val() == "Lekarz") {
+                    $("#doctorSpecialization").show();
+                }
+                else {
+                    $("#doctorSpecialization").hide();
+                }
+            });
+        });
+    </script>
 }
 <h2>Edycja</h2>
 
@@ -9,6 +28,14 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
+        <hr />
+        @Html.HiddenFor(model => model.Id)
+        <div class="form-group jumbotron">
+            @Html.Label("Rola", new { @class = "col-md-2 control-label", @id = "role" })
+            <div class="col-md-10">
+                @Html.DropDownList("UserRoles", (SelectList)ViewBag.Name, new { @class = "form-control", @id = "choosen" })
+            </div>
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -27,25 +54,29 @@
                 @Html.EditorFor(model => model.PESEL, new { htmlAttributes = new { @class = "form-control" } })
             </div>
         </div>
-        @if (User.IsInRole("Lekarz"))
-        {
-            <div class="form-group">
-                @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EnumDropDownListFor(model => model.Specialization, new { htmlAttributes = new { @class = "form-control" } })
+        <div class="form-group collapse" id="doctorSpecialization">
+            @Html.LabelFor(model => model.Specialization, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(m => m.Specialization, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.isValid, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.isValid)
                 </div>
             </div>
-        }
-        else
-        {
-            @Html.Hidden("Specialization", shanuMVCUserRoles.Models.Specialization.Internista)
-        }
+        </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <a href="@Url.Action("EditPost", "Account")" class="btn btn-default">Zapisz</a>
-                <a href="@Url.Action("Index", "Manage")" class="btn btn-default">Wróć</a>
+                <input type="submit" value="Zapisz" class="btn btn-default" />
             </div>
         </div>
-        </div>
+    </div>
 }
+
+<div>
+    @Html.ActionLink("Wróć do listy", "List")
+</div>

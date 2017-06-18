@@ -13,6 +13,9 @@ namespace shanuMVCUserRoles.Models
 
     public class ApplicationUser : IdentityUser
     {
+        [Display(Name = "Rola")]
+        public string UserRoles { get; set; }
+
         [Display(Name = "Specjalizacja")]
         public Specialization? Specialization { get; set; }
 
@@ -56,8 +59,8 @@ namespace shanuMVCUserRoles.Models
         [Display(Name = "Pacjent")]
         public string PatientID { get; set; } = "free";
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:f}", ApplyFormatInEditMode = true)]
         [Display(Name = "Termin")]
         public DateTime Date { get; set; }
 
@@ -82,5 +85,6 @@ namespace shanuMVCUserRoles.Models
         }
 
         public System.Data.Entity.DbSet<shanuMVCUserRoles.Models.Appointment> Appointments { get; set; }
+
     }
 }

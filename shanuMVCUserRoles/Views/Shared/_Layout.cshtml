@@ -23,14 +23,21 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Strona Główna", "Index", "Home")</li>
-                    @if (User.IsInRole("Pacjent") || User.IsInRole("Admin"))
+                                                         @*
+         @if (User.IsInRole("Pacjent") || User.IsInRole("Admin"))
+        {
+            <li>@Html.ActionLink("Umów wizytę", "Index", "Appointments", null, null)</li>
+        }
+        @if (User.IsInRole("Lekarz") || User.IsInRole("Admin"))
+        {
+            <li>@Html.ActionLink("Stwórz wolny termin", "Create", "Appointments", null, null)</li>
+        }
+         *@   
+                    @if (User.IsInRole("Admin"))
                     {
-                        <li>@Html.ActionLink("Umów wizytę", "Index", "Appointments", null, null)</li>
-                    }   
-                    @if (User.IsInRole("Lekarz") || User.IsInRole("Admin"))
-                    {
-                        <li>@Html.ActionLink("Stwórz wolny termin", "Create", "Appointments", null, null)</li>
-                    }    
+                        <li>@Html.ActionLink("Lista użytkowników", "List", "Account")</li>
+                    }
+
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
