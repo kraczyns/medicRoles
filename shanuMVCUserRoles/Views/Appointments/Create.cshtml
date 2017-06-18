@@ -1,0 +1,46 @@
+﻿@model shanuMVCUserRoles.Models.Appointment
+@{
+    ViewBag.Title = "Nowa wizyta";
+}
+<h2>Nowa wizyta</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Dodaj wolny termin</h4>
+        <hr />
+
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.DoctorID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @ViewBag.Name
+                @Html.Hidden("DoctorID", (object)ViewBag.Id)
+            </div>
+        </div>
+        <div class="form-group input-group-sm">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Date, "{0:yyyy-MM-dd}", new { @type = "date" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Place, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(model => model.Place, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Dodaj" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<div>
+    @Html.ActionLink("Wróć do profilu", "Index", "Manage", null, null)
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

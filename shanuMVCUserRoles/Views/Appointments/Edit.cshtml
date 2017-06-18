@@ -1,0 +1,16 @@
+﻿@model shanuMVCUserRoles.Models.Appointment
+@{
+    ViewBag.Title = "Odwołanie wizyty";
+}
+<h2>Odwołanie wizyty</h2>
+<h3>Czy jesteś pewien, że chcesz odwołać wizytę?</h3>
+<div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <a href='@Url.Action("PostEdit", "Appointments", new { appointmentid = Model.AppointmentID })' class="btn btn-danger">Odwołaj</a> |
+            @Html.ActionLink("Powrót do profilu", "Index", "Manage")
+        </div>
+    }
+</div>

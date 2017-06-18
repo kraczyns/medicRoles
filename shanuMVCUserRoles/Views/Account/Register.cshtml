@@ -1,0 +1,105 @@
+﻿@model shanuMVCUserRoles.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Zarejestruj się";
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#doctorSpecialization").hide();
+
+            $("#choosen").change(function () {
+                if ($("#choosen").val() == "Lekarz") {
+                    $("#doctorSpecialization").show();
+                }
+                else {
+                    $("#doctorSpecialization").hide();
+                }
+            });
+        });
+    </script>
+}
+
+<h2>@ViewBag.Title.</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Stwórz konto.</h4>
+    <hr />
+    <div class="form-group jumbotron">
+        @Html.Label("Rola", new { @class = "col-md-2 control-label", @id = "role"})
+        <div class="col-md-10">
+          @Html.DropDownList("UserRoles", (SelectList)ViewBag.Name, new { @class = "form-control", @id = "choosen" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <section id="userData">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Surname, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Surname, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.PESEL, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.PESEL, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group" id="doctorSpecialization">
+                    @Html.LabelFor(m => m.Specialization, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.EnumDropDownListFor(m => m.Specialization, new { @class = "form-control" })
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="col-md-6">
+            <section id="userSettings">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <center>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Zarejestruj się" />
+            </div>
+        </div>
+    </center>
+
+}
+
+

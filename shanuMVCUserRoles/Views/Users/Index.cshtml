@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Zarejestrowano";
+}
+    <h2>  Witaj <strong>@ViewBag.Name</strong> :) </h2>
+@if (Request.IsAuthenticated && !User.IsInRole("Pacjent") && !User.IsInRole("Lekarz") && !User.IsInRole("Admin"))
+{
+    <h3> Wyloguj się i zaloguj raz jeszcze aby móc korzystać z portalu <strong>WebMedic</strong>. </h3>
+}
+@if (User.IsInRole("Pacjent"))
+{
+    <h3> Korzystaj z portalu <strong>WebMedic</strong>. Zapisuj się, przeglądaj i odwołuj swoje wizyty, bez kolejek!  </h3>
+}
+@if (User.IsInRole("Lekarz"))
+{
+    <h3> Korzystaj z portalu <strong>WebMedic</strong>. Twórz wolne terminy, przeglądaj i odwołuj wizyty, wszystko w jednym miejscu! </h3>
+}
+

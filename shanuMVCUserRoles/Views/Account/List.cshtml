@@ -1,0 +1,59 @@
+﻿@model List<shanuMVCUserRoles.Models.ApplicationUser> 
+@{
+    ViewBag.Title = "Lista użytkowników";
+}
+
+<h2>Lista użytkowników</h2>
+@using (Html.BeginForm("List", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+<table class="table table-hover">
+    <tr>
+        <th>
+            Imię
+        </th>
+        <th>
+            Nazwisko
+        </th>
+        <th>
+            PESEL
+        </th>
+        <th>
+            Specializacja
+        </th>
+        <th>
+            Zatwierdzony?
+        </th>
+    </tr>
+    @for (int item = 0; item < Model.Count(); item++)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => Model[item].Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model[item].Surname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model[item].PESEL)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => Model[item].Specialization)
+            </td>
+            <td>
+             @Html.CheckBoxFor(modelItem => Model[item].isValid)
+            </td>
+        </tr>
+    }
+</table>
+<center>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Zapisz" class="btn btn-default" />
+        </div>
+    </div>
+</center>
+}
+
+
+

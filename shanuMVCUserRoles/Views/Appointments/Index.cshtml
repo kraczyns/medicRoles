@@ -1,0 +1,75 @@
+﻿@model shanuMVCUserRoles.Models.AppointmentViewModel
+
+@{
+    ViewBag.Title = "Nowa wizyta";
+}
+
+<h2>Umów wizytę</h2>
+<h3>Wybierz odpowiedniego lekarza</h3>
+<div class="specialization-button">
+    <div class="row">
+        @foreach (shanuMVCUserRoles.Models.Specialization Specialization in Enum.GetValues(typeof(shanuMVCUserRoles.Models.Specialization)))
+        {
+            <a href='@Url.Action("Index", "Appointments", new { userId = ViewBag.Id, specializationId = Specialization, place = ViewBag.Place })' class="btn btn-success">@Specialization</a>
+        }
+    </div>
+</div>
+<h3>Wybierz miejsce</h3>
+<div class="place-button">
+    <div class="row">
+        @foreach (shanuMVCUserRoles.Models.Place Place in Enum.GetValues(typeof(shanuMVCUserRoles.Models.Place)))
+            {
+            <a href='@Url.Action("Index", "Appointments", new { userId = ViewBag.Id, specializationId = ViewBag.Specialization, place = Place })' class="btn btn-primary">@Place</a>
+        }
+    </div>
+</div>
+<h3>Wybierz datę wizyty</h3>
+@using (Html.BeginForm())
+            {
+    <div class="row">
+        @Html.TextBox("fromDate", "{0:yyyy-MM-dd}", new { @type = "date" })
+        @Html.TextBox("toDate", "{0:yyyy-MM-dd}", new { @type = "date" })
+        <input type="submit" value="Szukaj" class="btn btn-default" /> <span> </span>
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Doctor.Specialization)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DoctorID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Place)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Appointments)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Doctor.Specialization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Doctor.Name)
+                @Html.DisplayFor(modelItem => item.Doctor.Surname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Place)
+            </td>
+            <td>
+                <a href='@Url.Action("Summary", "Appointments", new { patientid = ViewBag.Id, appointmentid = item.AppointmentID })' class="btn btn-danger">Zapisz mnie</a>
+            </td>
+        </tr>
+    }
+
+</table>
